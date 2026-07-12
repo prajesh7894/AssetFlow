@@ -129,7 +129,7 @@ export function GlobalSearch({ isOpen, onClose, navigation }: GlobalSearchProps)
                 <div>
                   <h3 className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Navigation</h3>
                   <div className="space-y-1">
-                    {filteredNav.map((item, idx) => {
+                    {filteredNav.map((item) => {
                       const globalIdx = flatResults.findIndex(r => r.data === item);
                       const isSelected = globalIdx === selectedIndex;
                       return (
@@ -158,7 +158,7 @@ export function GlobalSearch({ isOpen, onClose, navigation }: GlobalSearchProps)
                 <div>
                   <h3 className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Assets</h3>
                   <div className="space-y-1">
-                    {filteredAssets.map((asset, idx) => {
+                    {filteredAssets.map((asset) => {
                       const globalIdx = flatResults.findIndex(r => r.data === asset);
                       const isSelected = globalIdx === selectedIndex;
                       return (
@@ -192,7 +192,7 @@ export function GlobalSearch({ isOpen, onClose, navigation }: GlobalSearchProps)
                 <div>
                   <h3 className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Employees</h3>
                   <div className="space-y-1">
-                    {filteredEmployees.map((emp, idx) => {
+                    {filteredEmployees.map((emp) => {
                       const globalIdx = flatResults.findIndex(r => r.data === emp);
                       const isSelected = globalIdx === selectedIndex;
                       return (

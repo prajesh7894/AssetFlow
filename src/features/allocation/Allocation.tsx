@@ -12,7 +12,7 @@ import { AllocationForm } from "./AllocationForm";
 export default function Allocation() {
   // Data
   const { data: assets, loading } = useFirestoreQuery<any>("assets");
-  const { updateRecord, mutating } = useFirestoreMutation("assets");
+  const { updateRecord, loading: mutating } = useFirestoreMutation("assets");
 
   // UI State
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);

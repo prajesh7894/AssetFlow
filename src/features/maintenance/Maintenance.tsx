@@ -19,7 +19,7 @@ const KANBAN_COLUMNS = [
 
 export default function Maintenance() {
   const { data: tickets, loading } = useFirestoreQuery<any>("maintenance");
-  const { createRecord, updateRecord, mutating } = useFirestoreMutation("maintenance");
+  const { createRecord, updateRecord, loading: mutating } = useFirestoreMutation("maintenance");
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
