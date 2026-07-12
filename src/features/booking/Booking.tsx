@@ -120,7 +120,7 @@ export default function Booking() {
                 <Calendar className="h-4 w-4 mr-2 text-primary" /> Resources
               </div>
               <div className="relative flex">
-                {timeSlots.map((time, idx) => (
+                {timeSlots.map((time) => (
                   <div key={time} className="flex-1 border-r border-border/50 p-2 text-center text-xs font-medium text-muted-foreground">
                     {time}
                   </div>
@@ -160,7 +160,6 @@ export default function Booking() {
                         {/* Render Bookings Overlays */}
                         {resourceBookings.map((booking: any) => {
                           const style = getStyleForBooking(booking.startTime, booking.endTime);
-                          const isClipped = parseHour(booking.startTime) < START_HOUR || parseHour(booking.endTime) > END_HOUR;
                           
                           return (
                             <div 

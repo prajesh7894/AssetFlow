@@ -7,6 +7,9 @@ export function useFirestoreQuery<T>(collectionName: string, ...queryConstraints
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  // Extract to separate variable for dependency array
+  const constraintsString = JSON.stringify(queryConstraints);
+
   useEffect(() => {
     setLoading(true);
 
@@ -59,7 +62,8 @@ export function useFirestoreQuery<T>(collectionName: string, ...queryConstraints
     );
 
     return () => unsubscribe();
-  }, [collectionName, JSON.stringify(queryConstraints)]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collectionName, constraintsString]);
 
   return { data, loading, error };
 }

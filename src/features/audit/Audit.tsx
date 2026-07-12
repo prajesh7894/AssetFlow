@@ -1,39 +1,42 @@
 import { toast } from "sonner";
-import { ShieldCheck, ScanBarcode, CheckCircle2, AlertTriangle, XCircle, Search } from "lucide-react";
+import { ShieldCheck, ScanBarcode, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
 import { useFirestoreMutation } from "../../hooks/useFirestoreMutation";
 import { useAuth } from "../../context/AuthContext";
-import { Button } from "../../components/ui/button";
-import { Badge } from "../../components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
-import { Dialog } from "../../components/ui/dialog";
 import { ScannerSimulator } from "./ScannerSimulator";
+import { Dialog } from "../../components/ui/dialog";
+import { Button } from "../../components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 
 export default function Audit() {
   const { user } = useAuth();
-  const { data: auditLogs, loading: logsLoading } = useFirestoreQuery<any>("auditLogs");
-  const { data: assets, loading: assetsLoading } = useFirestoreQuery<any>("assets");
-  const { createRecord: createAuditLog, mutating: mutatingAudit } = useFirestoreMutation("auditLogs");
-  const { updateRecord: updateAsset, mutating: mutatingAsset } = useFirestoreMutation("assets");
-
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [selectedLog, setSelectedLog] = useState<any>(null);
   const [isResolveModalOpen, setIsResolveModalOpen] = useState(false);
 
+  // Queries
+  const { data: assets, loading: assetsLoading } = useFirestoreQuery<any>("assets");
+  const { data: auditLogs, loading: logsLoading } = useFirestoreQuery<any>("auditLogs");
+
+  // Mutations
+  const { createRecord: createAuditLog, mutating: mutatingAudit } = useFirestoreMutation("auditLogs");
+  const { updateRecord: updateAsset } = useFirestoreMutation("assets");
+  const { updateRecord: updateLog } = useFirestoreMutation("auditLogs");
+
   // Handlers
   const handleLogAudit = async (data: any) => {
     try {
-      await createAuditLog({
-        ...data,
+      await createAuditLog({ 
+        ...data, 
         timestamp: new Date().toISOString(),
         auditor: user?.displayName || user?.email || "Admin",
       });
-      // Don't close scanner immediately, allow continuous scanning
-      toast(`Audit logged successfully: ${data.status}`);
+      toast.success(`Audit logged successfully: ${data.status}`);
+      setIsScannerOpen(false);
     } catch (err) {
       console.error(err);
-      toast("Failed to log audit.");
+      toast.error("Failed to log audit.");
     }
   };
 
@@ -60,14 +63,13 @@ export default function Audit() {
       }
 
       // Update the audit log status to Resolved
-      const { updateRecord: updateLog } = useFirestoreMutation("auditLogs");
       await updateLog(selectedLog.id, { status: "Resolved" });
 
       setIsResolveModalOpen(false);
       setSelectedLog(null);
     } catch (err) {
       console.error(err);
-      toast("Failed to resolve discrepancy.");
+      toast.error("Failed to resolve discrepancy.");
     }
   };
 
