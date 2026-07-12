@@ -11,13 +11,13 @@ export const seedDatabase = async () => {
 
   // Assets
   const assets = [
-    { id: "asset-1", tag: "#A1002", name: "Dell Laptop", category: "Hardware", status: "Allocated", location: "London", assignedTo: "user-1" },
-    { id: "asset-2", tag: "#B4003", name: "Projector 400x", category: "Hardware", status: "Maintenance", location: "NY Floor 2", assignedTo: null },
-    { id: "asset-3", tag: "#C8004", name: "Office Chair", category: "Furniture", status: "Available", location: "Warehouse", assignedTo: null },
-    { id: "asset-4", tag: "#1003", name: "Macbook Pro", category: "Hardware", status: "Allocated", location: "Dept HR", assignedTo: "user-2" },
-    { id: "asset-5", tag: "#A2000", name: "Monitor", category: "Hardware", status: "Allocated", location: "Dept HR", assignedTo: "user-2" },
-    { id: "asset-6", tag: "#1100", name: "Server X002", category: "Hardware", status: "In Transit", location: "Dept IT", assignedTo: null },
-    { id: "asset-7", tag: "#S001", name: "Adobe CC License", category: "Software", status: "Available", location: "Digital", assignedTo: null },
+    { id: "asset-1", tag: "AF-0001", name: "Dell XPS 15", category: "Laptops", status: "Allocated", location: "NY Office Floor 3", assignedTo: "John Doe", cost: 1800 },
+    { id: "asset-2", tag: "AF-0002", name: "Epson Projector X", category: "Equipment", status: "Maintenance", location: "NY Office Floor 4", assignedTo: null, cost: 650 },
+    { id: "asset-3", tag: "AF-0003", name: "Herman Miller Chair", category: "Furniture", status: "Available", location: "London Office", assignedTo: null, cost: 1200 },
+    { id: "asset-4", tag: "AF-0004", name: "MacBook Pro 16", category: "Laptops", status: "In Transit", location: "Warehouse B", assignedTo: "Jane Smith", cost: 2400 },
+    { id: "asset-5", tag: "AF-0005", name: "Standing Desk", category: "Furniture", status: "Allocated", location: "London Office", assignedTo: "Alex Chen", cost: 800 },
+    { id: "asset-6", tag: "AF-0006", name: "Cisco Switch", category: "Networking", status: "Available", location: "Server Room A", assignedTo: null, cost: 3500 },
+    { id: "asset-7", tag: "#S001", name: "Adobe CC License", category: "Software", status: "Available", location: "Digital", assignedTo: null, cost: 600 },
   ];
 
   // Maintenance Tickets
