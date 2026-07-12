@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { 
   Database, 
   Box, 
@@ -33,10 +34,10 @@ export default function Dashboard() {
     setSeeding(true);
     try {
       await seedDatabase();
-      alert("Database seeded successfully!");
+      toast.success("Database seeded successfully!");
     } catch (err) {
       console.error(err);
-      alert("Failed to seed. Is Firebase Configured?");
+      toast.error("Failed to seed. Is Firebase Configured?");
     }
     setSeeding(false);
   };

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Download, PieChart as PieChartIcon, Activity, ShieldCheck, DollarSign } from "lucide-react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
@@ -63,7 +64,7 @@ export default function Reports() {
   // --- CSV Export Engine ---
   const exportToCSV = (filename: string, rows: any[]) => {
     if (!rows || !rows.length) {
-      alert("No data available to export.");
+      toast("No data available to export.");
       return;
     }
 

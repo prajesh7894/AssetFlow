@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { Building2, Users, UserPlus, FolderPlus, MonitorSmartphone, Mail } from "lucide-react";
 import { useState } from "react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
@@ -32,7 +33,7 @@ export default function Organization() {
       setIsDeptModalOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to create department");
+      toast("Failed to create department");
     }
   };
 
@@ -43,7 +44,7 @@ export default function Organization() {
       setActiveTab("Employees");
     } catch (err) {
       console.error(err);
-      alert("Failed to create employee");
+      toast("Failed to create employee");
     }
   };
 

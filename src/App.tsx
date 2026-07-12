@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import MainLayout from './components/layout/MainLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import Login from './features/auth/Login';
@@ -15,6 +16,7 @@ import Notifications from './features/notifications/Notifications';
 function App() {
   return (
     <Router>
+      <Toaster theme="dark" position="top-right" richColors />
       <Routes>
         <Route path="/login" element={<Login />} />
         

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { Wrench, Plus, MessageSquare, Clock, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
@@ -36,7 +37,7 @@ export default function Maintenance() {
       setIsFormOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to submit ticket.");
+      toast("Failed to submit ticket.");
     }
   };
 
@@ -49,7 +50,7 @@ export default function Maintenance() {
       setIsDetailOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to update status.");
+      toast("Failed to update status.");
     }
   };
 

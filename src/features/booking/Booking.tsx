@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { Calendar, Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../components/ui/button";
@@ -51,7 +52,7 @@ export default function Booking() {
       setIsDialogOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to create booking.");
+      toast("Failed to create booking.");
     }
   };
 

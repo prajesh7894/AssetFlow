@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { ArrowRightLeft, UserX, CheckCircle, PackageSearch } from "lucide-react";
 import { useState } from "react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
@@ -46,7 +47,7 @@ export default function Allocation() {
       setIsAssignModalOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to process allocation.");
+      toast("Failed to process allocation.");
     }
   };
 
@@ -60,7 +61,7 @@ export default function Allocation() {
         });
       } catch (err) {
         console.error(err);
-        alert("Failed to revoke asset.");
+        toast("Failed to revoke asset.");
       }
     }
   };
@@ -73,7 +74,7 @@ export default function Allocation() {
       });
     } catch (err) {
       console.error(err);
-      alert("Failed to accept transfer.");
+      toast("Failed to accept transfer.");
     }
   };
 
