@@ -17,7 +17,7 @@ export default function Booking() {
   // Data
   const { data: resources, loading: resLoading } = useFirestoreQuery<any>("resources");
   const { data: allBookings, loading: bookLoading } = useFirestoreQuery<any>("bookings");
-  const { createRecord: createBooking, mutating } = useFirestoreMutation("bookings");
+  const { createRecord: createBooking, loading: mutating } = useFirestoreMutation("bookings");
   const { createRecord: createNotification } = useFirestoreMutation("notifications");
 
   // Timeline Configuration (09:00 to 18:00)

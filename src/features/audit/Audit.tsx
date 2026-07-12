@@ -20,7 +20,7 @@ export default function Audit() {
   const { data: auditLogs, loading: logsLoading } = useFirestoreQuery<any>("auditLogs");
 
   // Mutations
-  const { createRecord: createAuditLog, mutating: mutatingAudit } = useFirestoreMutation("auditLogs");
+  const { createRecord: createAuditLog, loading: mutatingAudit } = useFirestoreMutation("auditLogs");
   const { updateRecord: updateAsset } = useFirestoreMutation("assets");
   const { updateRecord: updateLog } = useFirestoreMutation("auditLogs");
 

@@ -21,8 +21,8 @@ export default function Organization() {
   const { data: assets, loading: assetsLoading } = useFirestoreQuery<any>("assets");
 
   // Mutations
-  const { createRecord: createDept, mutating: mutatingDept } = useFirestoreMutation("departments");
-  const { createRecord: createEmp, mutating: mutatingEmp } = useFirestoreMutation("employees");
+  const { createRecord: createDept, loading: mutatingDept } = useFirestoreMutation("departments");
+  const { createRecord: createEmp, loading: mutatingEmp } = useFirestoreMutation("employees");
 
   const isLoading = deptLoading || empLoading || assetsLoading;
 
