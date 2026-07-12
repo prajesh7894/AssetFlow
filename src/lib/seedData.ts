@@ -20,11 +20,28 @@ export const seedDatabase = async () => {
     { id: "asset-7", tag: "#S001", name: "Adobe CC License", category: "Software", status: "Available", location: "Digital", assignedTo: null },
   ];
 
-  // Maintenance
+  // Maintenance Tickets
   const maintenance = [
-    { id: "m-1", assetId: "asset-2", issue: "bulb warning msg", priority: "High", status: "Pending", reportedAt: new Date().toISOString() },
-    { id: "m-2", assetId: "asset-3", issue: "assembly request", priority: "Low", status: "Approved", reportedAt: new Date().toISOString() },
-    { id: "m-3", assetId: "asset-6", issue: "heading to IT", priority: "High", status: "In transit", reportedAt: new Date().toISOString() },
+    { 
+      id: "m-1", assetId: "AF-0002", title: "Projector bulb replacement", issue: "Bulb warning msg, dim light", 
+      priority: "Medium", status: "In Progress", technician: "Tech Dave", reportedAt: new Date(Date.now() - 86400000).toISOString(),
+      history: [{ date: new Date(Date.now() - 86400000).toISOString(), action: "Ticket Created" }, { date: new Date(Date.now() - 40000000).toISOString(), action: "Assigned to Tech Dave" }]
+    },
+    { 
+      id: "m-2", assetId: "AF-0003", title: "Chair assembly required", issue: "Delivered in box", 
+      priority: "Low", status: "Approved", technician: null, reportedAt: new Date(Date.now() - 172800000).toISOString(),
+      history: [{ date: new Date(Date.now() - 172800000).toISOString(), action: "Ticket Created" }, { date: new Date(Date.now() - 100000000).toISOString(), action: "Approved by Admin" }]
+    },
+    { 
+      id: "m-3", assetId: "AF-0006", title: "Server offline", issue: "Power supply failed, needs immediate replacement", 
+      priority: "Critical", status: "Pending", technician: null, reportedAt: new Date().toISOString(),
+      history: [{ date: new Date().toISOString(), action: "Ticket Created" }]
+    },
+    { 
+      id: "m-4", assetId: "AF-0001", title: "Keyboard replacement", issue: "Keys sticking", 
+      priority: "Low", status: "Resolved", technician: "Tech Dave", reportedAt: new Date(Date.now() - 600000000).toISOString(),
+      history: [{ date: new Date(Date.now() - 600000000).toISOString(), action: "Ticket Created" }, { date: new Date(Date.now() - 500000000).toISOString(), action: "Resolved by Tech Dave" }]
+    },
   ];
 
   // Notifications
