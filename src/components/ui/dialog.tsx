@@ -20,8 +20,8 @@ export function Dialog({ isOpen, onClose, title, children }: DialogProps) {
       />
       
       {/* Modal */}
-      <div className="relative z-50 w-full max-w-lg bg-card border border-border shadow-lg rounded-xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
-        <div className="flex items-center justify-between p-4 border-b border-border">
+      <div className="relative z-50 w-full max-w-lg bg-card border border-border shadow-2xl rounded-xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
+        <div className="flex items-center justify-between p-5 border-b border-border/50">
           <h2 className="text-lg font-semibold">{title}</h2>
           <button 
             onClick={onClose} 

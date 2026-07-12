@@ -88,13 +88,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto flex flex-col space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-7xl mx-auto flex flex-col space-y-10 animate-in fade-in duration-500 pb-12">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-foreground">Overview</h2>
-          <p className="text-muted-foreground mt-1">Real-time enterprise telemetry and operations.</p>
+          <p className="text-muted-foreground mt-1.5">Real-time enterprise telemetry and operations.</p>
         </div>
         <Button variant="outline" onClick={handleSeed} disabled={seeding} className="group transition-all">
           <Database className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
@@ -103,13 +103,13 @@ export default function Dashboard() {
       </div>
 
       {/* KPI Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
         {kpis.map((kpi, idx) => (
           <div 
             key={idx} 
-            className="group relative overflow-hidden bg-card border border-border rounded-xl p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-1 hover:border-primary/50"
+            className="group relative overflow-hidden bg-card border border-border rounded-2xl p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/40"
           >
-            <div className={`absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 rounded-full opacity-20 blur-2xl transition-all group-hover:opacity-40 ${kpi.bg}`}></div>
+            <div className={`absolute top-0 right-0 w-32 h-32 -mr-12 -mt-12 rounded-full opacity-10 blur-3xl transition-all duration-500 group-hover:opacity-30 ${kpi.bg}`}></div>
             <div className="flex items-center justify-between mb-4 relative z-10">
               <div className={`p-2 rounded-lg ${kpi.bg}`}>
                 <kpi.icon className={`h-5 w-5 ${kpi.color}`} />
