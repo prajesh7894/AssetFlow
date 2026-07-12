@@ -2,7 +2,9 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// TODO: Replace with your actual Firebase project configuration
+// Check if we're using a dummy config
+export const isDemoMode = !import.meta.env.VITE_FIREBASE_API_KEY;
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "dummy-api-key",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "assetflow-demo.firebaseapp.com",

@@ -1,19 +1,13 @@
 import { writeBatch, doc } from "firebase/firestore";
-import { db } from "./firebase";
+import { db, isDemoMode } from "./firebase";
 
 export const seedDatabase = async () => {
-  const batch = writeBatch(db);
-
   // Departments
   const departments = [
     { id: "dept-1", name: "Engineering", headId: "user-1", parentId: null, status: "Active" },
     { id: "dept-2", name: "HR", headId: "user-2", parentId: null, status: "Active" },
     { id: "dept-3", name: "Design Team A", headId: "user-3", parentId: "dept-1", status: "Inactive" },
   ];
-  departments.forEach((dept) => {
-    const ref = doc(db, "departments", dept.id);
-    batch.set(ref, dept);
-  });
 
   // Assets
   const assets = [
@@ -23,11 +17,8 @@ export const seedDatabase = async () => {
     { id: "asset-4", tag: "#1003", name: "Macbook Pro", category: "Hardware", status: "Allocated", location: "Dept HR", assignedTo: "user-2" },
     { id: "asset-5", tag: "#A2000", name: "Monitor", category: "Hardware", status: "Allocated", location: "Dept HR", assignedTo: "user-2" },
     { id: "asset-6", tag: "#1100", name: "Server X002", category: "Hardware", status: "In Transit", location: "Dept IT", assignedTo: null },
+    { id: "asset-7", tag: "#S001", name: "Adobe CC License", category: "Software", status: "Available", location: "Digital", assignedTo: null },
   ];
-  assets.forEach((asset) => {
-    const ref = doc(db, "assets", asset.id);
-    batch.set(ref, asset);
-  });
 
   // Maintenance
   const maintenance = [
@@ -35,10 +26,6 @@ export const seedDatabase = async () => {
     { id: "m-2", assetId: "asset-3", issue: "assembly request", priority: "Low", status: "Approved", reportedAt: new Date().toISOString() },
     { id: "m-3", assetId: "asset-6", issue: "heading to IT", priority: "High", status: "In transit", reportedAt: new Date().toISOString() },
   ];
-  maintenance.forEach((m) => {
-    const ref = doc(db, "maintenance", m.id);
-    batch.set(ref, m);
-  });
 
   // Notifications
   const notifications = [
@@ -46,10 +33,25 @@ export const seedDatabase = async () => {
     { id: "n-2", userId: "user-1", text: "Asset transfer req by John H. approved", type: "approval", timestamp: new Date(Date.now() - 3600000).toISOString(), read: false },
     { id: "n-3", userId: "user-1", text: "Warning message for asset AF-001 (not charging)", type: "alert", timestamp: new Date(Date.now() - 10800000).toISOString(), read: false },
   ];
-  notifications.forEach((n) => {
-    const ref = doc(db, "notifications", n.id);
-    batch.set(ref, n);
-  });
+
+  if (isDemoMode) {
+    // Write directly to local storage to bypass Firebase
+    localStorage.setItem("demo_departments", JSON.stringify(departments));
+    localStorage.setItem("demo_assets", JSON.stringify(assets));
+    localStorage.setItem("demo_maintenance", JSON.stringify(maintenance));
+    localStorage.setItem("demo_notifications", JSON.stringify(notifications));
+    // Trigger custom event so the hook re-renders
+    window.dispatchEvent(new Event("demo_db_update"));
+    console.log("Local Sandbox seeded successfully!");
+    return;
+  }
+
+  // Real Firebase Mode
+  const batch = writeBatch(db);
+  departments.forEach((dept) => batch.set(doc(db, "departments", dept.id), dept));
+  assets.forEach((asset) => batch.set(doc(db, "assets", asset.id), asset));
+  maintenance.forEach((m) => batch.set(doc(db, "maintenance", m.id), m));
+  notifications.forEach((n) => batch.set(doc(db, "notifications", n.id), n));
 
   await batch.commit();
   console.log("Database seeded successfully!");
