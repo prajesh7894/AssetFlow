@@ -10,7 +10,7 @@ The system follows a standard 3-tier cloud-native architecture, optimized for re
 
 ```mermaid
 graph TD
-    subgraph Client [Client-Side (React/Vite)]
+    subgraph Client [Client Side]
         UI[UI Components]
         Context[Auth Context]
         Hooks[Custom Data Hooks]
