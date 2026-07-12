@@ -1,15 +1,42 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../lib/firebase";
+import { useAuth } from "../../context/AuthContext";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const { demoLogin } = useAuth();
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, integrate Firebase here
-    navigate("/dashboard");
+    setError("");
+    setLoading(true);
+
+    try {
+      // Attempt real Firebase login
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/dashboard");
+    } catch (err: any) {
+      console.error(err);
+      if (err.code === "auth/invalid-api-key" || err.message.includes("api-key")) {
+        console.warn("Firebase not configured. Bypassing login for Demo.");
+        demoLogin();
+        navigate("/dashboard");
+      } else {
+        setError(err.message || "Failed to log in.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -23,26 +50,30 @@ export default function Login() {
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
+          {error && (
+            <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
+              {error}
+            </div>
+          )}
+          
           <div className="space-y-2">
-            <label className="text-sm font-medium">Email</label>
-            <input
+            <Label>Email</Label>
+            <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@company.com"
-              className="w-full px-3 py-2 bg-background border border-input rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Password</label>
-            <input
+            <Label>Password</Label>
+            <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3 py-2 bg-background border border-input rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               required
             />
             <div className="flex justify-end">
@@ -58,12 +89,9 @@ export default function Login() {
               <p className="text-muted-foreground text-xs">Sign up creates an employee account. admin roles assigned later</p>
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 py-2 rounded-md font-medium transition-colors"
-            >
-              Create Account
-            </button>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Signing in..." : "Create Account / Login"}
+            </Button>
           </div>
         </form>
       </div>
