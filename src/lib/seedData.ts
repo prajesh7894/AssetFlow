@@ -4,9 +4,17 @@ import { db, isDemoMode } from "./firebase";
 export const seedDatabase = async () => {
   // Departments
   const departments = [
-    { id: "dept-1", name: "Engineering", headId: "user-1", parentId: null, status: "Active" },
-    { id: "dept-2", name: "HR", headId: "user-2", parentId: null, status: "Active" },
-    { id: "dept-3", name: "Design Team A", headId: "user-3", parentId: "dept-1", status: "Inactive" },
+    { id: "dept-1", name: "Engineering", headId: "EMP-001", status: "Active" },
+    { id: "dept-2", name: "Human Resources", headId: "EMP-003", status: "Active" },
+    { id: "dept-3", name: "Sales & Marketing", headId: "EMP-004", status: "Active" },
+  ];
+
+  // Employees
+  const employees = [
+    { id: "emp-1", empId: "EMP-001", name: "John Doe", title: "VP of Engineering", departmentId: "dept-1", email: "john@example.com", status: "Active" },
+    { id: "emp-2", empId: "EMP-002", name: "Alex Chen", title: "Senior Developer", departmentId: "dept-1", email: "alex@example.com", status: "Active" },
+    { id: "emp-3", empId: "EMP-003", name: "Jane Smith", title: "HR Director", departmentId: "dept-2", email: "jane@example.com", status: "Active" },
+    { id: "emp-4", empId: "EMP-004", name: "Sarah W", title: "Head of Sales", departmentId: "dept-3", email: "sarah@example.com", status: "Active" },
   ];
 
   // Assets
@@ -78,6 +86,7 @@ export const seedDatabase = async () => {
   if (isDemoMode) {
     // Write directly to local storage to bypass Firebase
     localStorage.setItem("demo_departments", JSON.stringify(departments));
+    localStorage.setItem("demo_employees", JSON.stringify(employees));
     localStorage.setItem("demo_assets", JSON.stringify(assets));
     localStorage.setItem("demo_maintenance", JSON.stringify(maintenance));
     localStorage.setItem("demo_notifications", JSON.stringify(notifications));
@@ -93,6 +102,7 @@ export const seedDatabase = async () => {
   // Real Firebase Mode
   const batch = writeBatch(db);
   departments.forEach((dept) => batch.set(doc(db, "departments", dept.id), dept));
+  employees.forEach((emp) => batch.set(doc(db, "employees", emp.id), emp));
   assets.forEach((asset) => batch.set(doc(db, "assets", asset.id), asset));
   maintenance.forEach((m) => batch.set(doc(db, "maintenance", m.id), m));
   notifications.forEach((n) => batch.set(doc(db, "notifications", n.id), n));
