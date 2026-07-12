@@ -68,6 +68,13 @@ export const seedDatabase = async () => {
     { id: "bk-4", resourceId: "res-2", title: "Presentation", bookedBy: "Sarah W", date: today, startTime: "15:00", endTime: "16:30", status: "Cancelled" },
   ];
 
+  // Audit Logs
+  const auditLogs = [
+    { id: "au-1", assetTag: "AF-0001", expectedLocation: "NY Office Floor 3", scannedLocation: "NY Office Floor 3", status: "Match", timestamp: new Date(Date.now() - 3600000).toISOString(), auditor: "Admin" },
+    { id: "au-2", assetTag: "AF-0002", expectedLocation: "NY Office Floor 4", scannedLocation: "London Office", status: "Mismatch", timestamp: new Date(Date.now() - 7200000).toISOString(), auditor: "Admin" },
+    { id: "au-3", assetTag: "AF-0004", expectedLocation: "Warehouse B", scannedLocation: "Missing", status: "Missing", timestamp: new Date(Date.now() - 86400000).toISOString(), auditor: "Jane Smith" },
+  ];
+
   if (isDemoMode) {
     // Write directly to local storage to bypass Firebase
     localStorage.setItem("demo_departments", JSON.stringify(departments));
@@ -76,6 +83,7 @@ export const seedDatabase = async () => {
     localStorage.setItem("demo_notifications", JSON.stringify(notifications));
     localStorage.setItem("demo_resources", JSON.stringify(resources));
     localStorage.setItem("demo_bookings", JSON.stringify(bookings));
+    localStorage.setItem("demo_auditLogs", JSON.stringify(auditLogs));
     // Trigger custom event so the hook re-renders
     window.dispatchEvent(new Event("demo_db_update"));
     console.log("Local Sandbox seeded successfully!");
@@ -90,6 +98,7 @@ export const seedDatabase = async () => {
   notifications.forEach((n) => batch.set(doc(db, "notifications", n.id), n));
   resources.forEach((r) => batch.set(doc(db, "resources", r.id), r));
   bookings.forEach((b) => batch.set(doc(db, "bookings", b.id), b));
+  auditLogs.forEach((a) => batch.set(doc(db, "auditLogs", a.id), a));
 
   await batch.commit();
   console.log("Database seeded successfully!");
