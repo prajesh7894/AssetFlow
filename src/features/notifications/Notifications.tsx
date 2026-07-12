@@ -1,59 +1,43 @@
-import { useState } from "react";
-
-const tabs = ["All", "Alerts", "Approvals", "System"];
-
-const notifications = [
-  { id: 1, text: "System AF-000 completed run #7 success", time: "2m ago", type: "system" },
-  { id: 2, text: "Asset transfer req by John H. approved", time: "1h ago", type: "approval" },
-  { id: 3, text: "Warning message for asset AF-001 (not charging)", time: "3h ago", type: "alert" },
-  { id: 4, text: "New user registered: sarah.m@company.com", time: "1d ago", type: "system" },
-  { id: 5, text: "Approval required: OP-2231 tool transfer request", time: "2d ago", type: "approval" },
-  { id: 6, text: "Auto-discrepancy flagged - AF-0110 missing (2)", time: "2d ago", type: "alert" },
-];
+import { Bell } from "lucide-react";
+import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
+import { Button } from "../../components/ui/button";
 
 export default function Notifications() {
-  const [activeTab, setActiveTab] = useState("All");
+  const { data: notifications, loading } = useFirestoreQuery<any>("notifications");
 
   return (
-    <div className="max-w-4xl">
-      <h2 className="text-2xl font-semibold mb-6">Activity logs & Notifications</h2>
-
-      <div className="flex space-x-2 border-b border-border mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === tab
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+    <div className="max-w-4xl flex flex-col h-full">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h2 className="text-2xl font-semibold">Notifications</h2>
+          <p className="text-sm text-muted-foreground mt-1">View system alerts and messages</p>
+        </div>
+        <Button variant="outline">Mark all as read</Button>
       </div>
 
-      <div className="bg-card border border-border rounded-lg overflow-hidden">
-        <ul className="divide-y divide-border">
-          {notifications.map((notif) => (
-            <li key={notif.id} className="p-4 flex items-start justify-between hover:bg-secondary/30 transition-colors">
-              <div className="flex items-center gap-3">
-                <span
-                  className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                    notif.type === "alert"
-                      ? "bg-destructive"
-                      : notif.type === "approval"
-                      ? "bg-primary"
-                      : "bg-muted-foreground"
-                  }`}
-                ></span>
-                <p className="text-sm text-foreground">{notif.text}</p>
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col">
+        {loading ? (
+          <div className="p-8 text-center text-muted-foreground">Loading notifications...</div>
+        ) : notifications.length === 0 ? (
+          <div className="p-8 flex flex-col items-center text-center text-muted-foreground">
+            <Bell className="h-12 w-12 text-muted mb-4" />
+            <p>No new notifications</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-border">
+            {notifications.map((notification) => (
+              <div key={notification.id} className={`p-4 flex gap-4 ${!notification.read ? 'bg-secondary/20' : ''}`}>
+                <div className="mt-1">
+                  <div className={`w-2.5 h-2.5 rounded-full ${notification.type === 'alert' ? 'bg-destructive' : notification.type === 'approval' ? 'bg-primary' : 'bg-muted-foreground'}`} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">{notification.text}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{new Date(notification.timestamp).toLocaleString()}</p>
+                </div>
               </div>
-              <span className="text-xs text-muted-foreground whitespace-nowrap ml-4">{notif.time}</span>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

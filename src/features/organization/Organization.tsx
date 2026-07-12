@@ -1,76 +1,65 @@
-import { useState } from "react";
-
-const tabs = ["Departments", "Categories", "Roles", "Users"];
-
-const departments = [
-  { id: 1, name: "Engineering", head: "Alice W.", parent: "—", status: "Active" },
-  { id: 2, name: "HR", head: "Bob M.", parent: "—", status: "Active" },
-  { id: 3, name: "Design Team A", head: "Charlie D.", parent: "Design", status: "Inactive" },
-];
+import { Plus } from "lucide-react";
+import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
+import { Button } from "../../components/ui/button";
+import { Badge } from "../../components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 
 export default function Organization() {
-  const [activeTab, setActiveTab] = useState("Departments");
+  const { data: departments, loading } = useFirestoreQuery<any>("departments");
 
   return (
-    <div className="max-w-5xl">
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold mb-2">Organization Setup</h2>
-        <span className="text-sm text-muted-foreground bg-secondary px-2 py-1 rounded">Admin only</span>
-      </div>
-
-      <div className="flex space-x-2 border-b border-border mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === tab
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      {activeTab === "Departments" && (
-        <div className="bg-card border border-border rounded-lg overflow-hidden">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-secondary/50 border-b border-border">
-              <tr>
-                <th className="px-4 py-3 font-medium">Department Name</th>
-                <th className="px-4 py-3 font-medium">Head</th>
-                <th className="px-4 py-3 font-medium">Parent Dept</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {departments.map((dept) => (
-                <tr key={dept.id} className="hover:bg-secondary/30 transition-colors">
-                  <td className="px-4 py-3 text-foreground">{dept.name}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{dept.head}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{dept.parent}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${
-                        dept.status === "Active"
-                          ? "bg-primary/20 text-primary border-primary/30"
-                          : "bg-secondary text-muted-foreground border-border"
-                      }`}
-                    >
-                      {dept.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="p-4 text-xs text-muted-foreground border-t border-border">
-            Add a department, sub-department or select to deactivate it.
-          </div>
+    <div className="max-w-4xl flex flex-col h-full">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h2 className="text-2xl font-semibold">Organization Setup</h2>
+          <p className="text-sm text-muted-foreground mt-1">Manage departments, roles, and hierarchy</p>
         </div>
-      )}
+        <Button>
+          <Plus className="mr-2 h-4 w-4" />
+          Add Department
+        </Button>
+      </div>
+
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Department Name</TableHead>
+              <TableHead>Head of Dept.</TableHead>
+              <TableHead>Employees</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Loading departments...</TableCell>
+              </TableRow>
+            ) : departments.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">No departments found.</TableCell>
+              </TableRow>
+            ) : (
+              departments.map((dept) => (
+                <TableRow key={dept.id}>
+                  <TableCell className="font-medium text-foreground">{dept.name}</TableCell>
+                  <TableCell>{dept.headId}</TableCell>
+                  <TableCell>--</TableCell>
+                  <TableCell>
+                    <Badge variant={dept.status === "Active" ? "success" : "secondary"}>
+                      {dept.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <button className="text-xs font-medium text-primary hover:underline">Edit</button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

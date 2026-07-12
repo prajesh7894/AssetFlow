@@ -1,29 +1,37 @@
-import { Search, Filter, Plus } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { useState } from "react";
+import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Badge } from "../../components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 
 const filterTabs = ["Category", "Location", "Department"];
 
-const assets = [
-  { tag: "#A1002", name: "Dell Laptop", category: "Hardware", status: "Allocated", location: "London" },
-  { tag: "#B4003", name: "Projector", category: "Hardware", status: "Maintenance", location: "NY Floor 2" },
-  { tag: "#C8004", name: "Office Chair", category: "Furniture", status: "Available", location: "Warehouse" },
-];
-
 export default function Assets() {
   const [activeFilter, setActiveFilter] = useState("Category");
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: assets, loading } = useFirestoreQuery<any>("assets");
+
+  const filteredAssets = assets.filter(asset => 
+    asset.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    asset.tag.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="max-w-6xl">
+    <div className="max-w-6xl flex flex-col h-full">
       <h2 className="text-2xl font-semibold mb-6">Assets directory</h2>
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex-1 max-w-xl flex gap-4 flex-col sm:flex-row items-start sm:items-center">
           <div className="relative flex-1 w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
+            <Input
               type="text"
-              placeholder="Search assets by tag, name, or employee..."
-              className="w-full pl-9 pr-4 py-2 bg-background border border-input rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="Search assets by tag, name..."
+              className="pl-9"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <div className="flex gap-2">
@@ -43,48 +51,53 @@ export default function Assets() {
           </div>
         </div>
         
-        <button className="flex items-center gap-2 bg-primary/20 text-primary border border-primary/30 px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/30 transition-colors">
-          <Plus className="h-4 w-4" />
+        <Button>
+          <Plus className="mr-2 h-4 w-4" />
           Register Asset
-        </button>
+        </Button>
       </div>
 
-      <div className="bg-card border border-border rounded-lg overflow-hidden">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-secondary/50 border-b border-border">
-            <tr>
-              <th className="px-4 py-3 font-medium">Tag</th>
-              <th className="px-4 py-3 font-medium">Name</th>
-              <th className="px-4 py-3 font-medium">Category</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-              <th className="px-4 py-3 font-medium">Location</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {assets.map((asset) => (
-              <tr key={asset.tag} className="hover:bg-secondary/30 transition-colors">
-                <td className="px-4 py-3 font-medium text-foreground">{asset.tag}</td>
-                <td className="px-4 py-3 text-muted-foreground">{asset.name}</td>
-                <td className="px-4 py-3 text-muted-foreground">{asset.category}</td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${
-                      asset.status === "Allocated"
-                        ? "bg-secondary text-muted-foreground border-border"
-                        : asset.status === "Available"
-                        ? "bg-primary/20 text-primary border-primary/30"
-                        : "bg-destructive/20 text-destructive border-destructive/30"
-                    }`}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Tag</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Location</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">Loading assets...</TableCell>
+            </TableRow>
+          ) : filteredAssets.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">No assets found.</TableCell>
+            </TableRow>
+          ) : (
+            filteredAssets.map((asset) => (
+              <TableRow key={asset.id}>
+                <TableCell className="font-medium text-foreground">{asset.tag}</TableCell>
+                <TableCell>{asset.name}</TableCell>
+                <TableCell>{asset.category}</TableCell>
+                <TableCell>
+                  <Badge 
+                    variant={
+                      asset.status === "Allocated" ? "secondary" : 
+                      asset.status === "Available" ? "success" : "destructive"
+                    }
                   >
                     {asset.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-muted-foreground">{asset.location}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                  </Badge>
+                </TableCell>
+                <TableCell>{asset.location}</TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 }

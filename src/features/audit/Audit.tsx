@@ -1,64 +1,60 @@
-import { Search } from "lucide-react";
-
-const auditLogs = [
-  { id: "#1003", name: "Laptop", location: "Dept HR", verification: "Match" },
-  { id: "#A2000", name: "Monitor", location: "Dept HR", verification: "Match" },
-  { id: "#1100", name: "Server", location: "Dept IT", verification: "Mismatch" },
-];
+import { ShieldCheck } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
+import { Badge } from "../../components/ui/badge";
 
 export default function Audit() {
+  // We don't have an audit collection in the dummy data yet, we can simulate or fetch from a new collection if seeded.
+  // Using static for now with the reusable components to ensure it meets requirements.
+  const auditLogs = [
+    { id: "au-1", assetId: "asset-1", reportedLocation: "London", verification: "Match", timestamp: new Date(Date.now() - 86400000).toISOString() },
+    { id: "au-2", assetId: "asset-2", reportedLocation: "NY Floor 3", verification: "Mismatch", timestamp: new Date(Date.now() - 172800000).toISOString() },
+  ];
+
   return (
-    <div className="max-w-5xl">
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold mb-2">Asset Audit</h2>
-        <span className="text-sm text-muted-foreground bg-secondary px-2 py-1 rounded">Audit logs, checks, auto-generated discrepancy report</span>
+    <div className="max-w-6xl flex flex-col h-full">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h2 className="text-2xl font-semibold">Audit & Verification</h2>
+          <p className="text-sm text-muted-foreground mt-1">Review physical audits and discrepancy logs</p>
+        </div>
+        <Button>
+          <ShieldCheck className="mr-2 h-4 w-4" />
+          Start New Audit
+        </Button>
       </div>
 
-      <div className="relative max-w-xl mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <input
-          type="text"
-          placeholder="Search tag, location or owner..."
-          className="w-full pl-9 pr-4 py-2 bg-background border border-input rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-      </div>
-
-      <div className="bg-card border border-border rounded-lg overflow-hidden mb-8">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-secondary/50 border-b border-border">
-            <tr>
-              <th className="px-4 py-3 font-medium">Asset</th>
-              <th className="px-4 py-3 font-medium">Reported location</th>
-              <th className="px-4 py-3 font-medium">Verification</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Audit ID</TableHead>
+              <TableHead>Asset ID</TableHead>
+              <TableHead>Reported Location</TableHead>
+              <TableHead>Verification Status</TableHead>
+              <TableHead>Timestamp</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {auditLogs.map((log) => (
-              <tr key={log.id} className="hover:bg-secondary/30 transition-colors">
-                <td className="px-4 py-3 font-medium text-foreground">{log.id} {log.name}</td>
-                <td className="px-4 py-3 text-muted-foreground">{log.location}</td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${
-                      log.verification === "Match"
-                        ? "bg-primary/20 text-primary border-primary/30"
-                        : "bg-destructive/20 text-destructive border-destructive/30"
-                    }`}
-                  >
+              <TableRow key={log.id}>
+                <TableCell className="font-medium">{log.id}</TableCell>
+                <TableCell>{log.assetId}</TableCell>
+                <TableCell>{log.reportedLocation}</TableCell>
+                <TableCell>
+                  <Badge variant={log.verification === "Match" ? "success" : "destructive"}>
                     {log.verification}
-                  </span>
-                </td>
-              </tr>
+                  </Badge>
+                </TableCell>
+                <TableCell>{new Date(log.timestamp).toLocaleDateString()}</TableCell>
+                <TableCell className="text-right space-x-2">
+                  <button className="text-xs font-medium text-primary hover:underline">Review</button>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="bg-secondary/30 border border-border p-4 rounded-lg flex items-center justify-between">
-        <p className="text-sm font-medium">Audit & Report - discrepancy report generated automatically</p>
-        <button className="bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 px-4 py-2 rounded-md font-medium text-sm transition-colors">
-          View audit report
-        </button>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

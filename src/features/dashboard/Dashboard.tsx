@@ -1,18 +1,48 @@
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Database } from "lucide-react";
+import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
+import { seedDatabase } from "../../lib/seedData";
+import { useState } from "react";
+import { Button } from "../../components/ui/button";
 
 export default function Dashboard() {
+  const { data: assets } = useFirestoreQuery<any>("assets");
+  const { data: notifications } = useFirestoreQuery<any>("notifications");
+  const [seeding, setSeeding] = useState(false);
+
+  const handleSeed = async () => {
+    setSeeding(true);
+    try {
+      await seedDatabase();
+      alert("Database seeded successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to seed. Is Firebase Configured?");
+    }
+    setSeeding(false);
+  };
+
+  const availableAssets = assets.filter(a => a.status === "Available").length;
+  const inTransit = assets.filter(a => a.status === "In Transit").length;
+  const allocated = assets.filter(a => a.status === "Allocated").length;
+
   const stats = [
-    { name: "Available Assets", value: "320" },
-    { name: "In Transit", value: "45" },
-    { name: "Available", value: "0" },
-    { name: "Active Bookings", value: "8" },
-    { name: "Pending Transfers", value: "12" },
-    { name: "Opening Balance", value: "—" },
+    { name: "Total Assets", value: assets.length || "0" },
+    { name: "In Transit", value: inTransit },
+    { name: "Available", value: availableAssets },
+    { name: "Allocated", value: allocated },
+    { name: "Pending Transfers", value: "—" },
+    { name: "Maintenance", value: assets.filter(a => a.status === "Maintenance").length },
   ];
 
   return (
     <div className="max-w-5xl">
-      <h2 className="text-2xl font-semibold mb-6">Dashboard</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-semibold">Dashboard</h2>
+        <Button variant="outline" size="sm" onClick={handleSeed} disabled={seeding}>
+          <Database className="mr-2 h-4 w-4" />
+          {seeding ? "Seeding..." : "Seed Dummy Data"}
+        </Button>
+      </div>
       
       {/* Stats Grid */}
       <div className="grid grid-cols-3 gap-4 mb-8">
@@ -32,30 +62,24 @@ export default function Dashboard() {
 
       {/* Action Buttons */}
       <div className="flex gap-4 mb-10">
-        <button className="px-4 py-2 bg-primary/20 text-primary border border-primary/30 rounded-md text-sm font-medium hover:bg-primary/30 transition-colors">
-          Generate report
-        </button>
-        <button className="px-4 py-2 bg-secondary text-secondary-foreground border border-border rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors">
-          Send reminder
-        </button>
-        <button className="px-4 py-2 bg-secondary text-secondary-foreground border border-border rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors">
-          View requests
-        </button>
+        <Button>Generate report</Button>
+        <Button variant="secondary">Send reminder</Button>
+        <Button variant="secondary">View requests</Button>
       </div>
 
       {/* Recent Activity */}
       <div>
         <h3 className="text-lg font-medium mb-4">Recent Activity</h3>
         <div className="space-y-4">
-          <div className="text-sm">
-            <p className="text-foreground">Equipment #001 allocated to New Dept - 10m ago</p>
-          </div>
-          <div className="text-sm">
-            <p className="text-foreground">Asset #45 - Booking confirmed - 12/10/24 5:00 PM</p>
-          </div>
-          <div className="text-sm">
-            <p className="text-foreground">Flagged - A#1022 maintenance required</p>
-          </div>
+          {notifications.slice(0, 5).map((n) => (
+            <div key={n.id} className="text-sm flex gap-2">
+              <span className={`w-2 h-2 mt-1.5 rounded-full flex-shrink-0 ${n.type === 'alert' ? 'bg-destructive' : n.type === 'approval' ? 'bg-primary' : 'bg-muted-foreground'}`}></span>
+              <p className="text-foreground">{n.text} - <span className="text-muted-foreground">{new Date(n.timestamp).toLocaleString()}</span></p>
+            </div>
+          ))}
+          {notifications.length === 0 && (
+            <p className="text-sm text-muted-foreground">No recent activity. Try seeding the database!</p>
+          )}
         </div>
       </div>
     </div>
