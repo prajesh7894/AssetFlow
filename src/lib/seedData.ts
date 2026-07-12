@@ -34,12 +34,31 @@ export const seedDatabase = async () => {
     { id: "n-3", userId: "user-1", text: "Warning message for asset AF-001 (not charging)", type: "alert", timestamp: new Date(Date.now() - 10800000).toISOString(), read: false },
   ];
 
+  // Booking Resources
+  const resources = [
+    { id: "res-1", name: "Conference Room A", type: "Meeting Room", capacity: 10, status: "Active" },
+    { id: "res-2", name: "Projector 400x", type: "Projector", capacity: null, status: "Active" },
+    { id: "res-3", name: "Company Van", type: "Vehicle", capacity: 7, status: "Active" },
+    { id: "res-4", name: "Boardroom", type: "Meeting Room", capacity: 20, status: "Maintenance" },
+  ];
+
+  // Bookings (Using today's date for timeline demo)
+  const today = new Date().toISOString().split('T')[0];
+  const bookings = [
+    { id: "bk-1", resourceId: "res-1", title: "Quarterly Planning", bookedBy: "Jane Smith", date: today, startTime: "09:00", endTime: "11:00", status: "Completed" },
+    { id: "bk-2", resourceId: "res-1", title: "Design Sync", bookedBy: "Alex Chen", date: today, startTime: "13:30", endTime: "15:00", status: "Ongoing" },
+    { id: "bk-3", resourceId: "res-3", title: "Client Site Visit", bookedBy: "Mike R", date: today, startTime: "10:00", endTime: "14:00", status: "Upcoming" },
+    { id: "bk-4", resourceId: "res-2", title: "Presentation", bookedBy: "Sarah W", date: today, startTime: "15:00", endTime: "16:30", status: "Cancelled" },
+  ];
+
   if (isDemoMode) {
     // Write directly to local storage to bypass Firebase
     localStorage.setItem("demo_departments", JSON.stringify(departments));
     localStorage.setItem("demo_assets", JSON.stringify(assets));
     localStorage.setItem("demo_maintenance", JSON.stringify(maintenance));
     localStorage.setItem("demo_notifications", JSON.stringify(notifications));
+    localStorage.setItem("demo_resources", JSON.stringify(resources));
+    localStorage.setItem("demo_bookings", JSON.stringify(bookings));
     // Trigger custom event so the hook re-renders
     window.dispatchEvent(new Event("demo_db_update"));
     console.log("Local Sandbox seeded successfully!");
@@ -52,6 +71,8 @@ export const seedDatabase = async () => {
   assets.forEach((asset) => batch.set(doc(db, "assets", asset.id), asset));
   maintenance.forEach((m) => batch.set(doc(db, "maintenance", m.id), m));
   notifications.forEach((n) => batch.set(doc(db, "notifications", n.id), n));
+  resources.forEach((r) => batch.set(doc(db, "resources", r.id), r));
+  bookings.forEach((b) => batch.set(doc(db, "bookings", b.id), b));
 
   await batch.commit();
   console.log("Database seeded successfully!");
