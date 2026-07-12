@@ -2,6 +2,15 @@
 
 AssetFlow is a next-generation Enterprise Asset Management System designed for the Odoo Hackathon. It bridges the gap between physical hardware and digital workflows, featuring Kanban boards, live mathematical timeline rendering, dual-view personnel directories, and a robust physical barcode scanner simulator.
 
+## 📚 Hackathon Documentation
+
+For judges and reviewers, please refer to the professional documentation located in our `docs/` folder:
+
+- [🚀 Hackathon Presentation Pitch](./docs/HACKATHON_PRESENTATION.md)
+- [🧑‍⚖️ Judge Q&A Cheat Sheet](./docs/JUDGE_QA.md)
+- [🌟 Executive Project Summary](./docs/PROJECT_SUMMARY.md)
+- [🏗️ System Architecture & Diagrams](./docs/SYSTEM_ARCHITECTURE.md)
+
 ## Features
 
 1. **Dashboard & KPIs**: Real-time analytical dashboard with beautiful Recharts data visualization.
