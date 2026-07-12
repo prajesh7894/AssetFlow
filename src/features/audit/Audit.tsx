@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { ShieldCheck, ScanBarcode, CheckCircle2, AlertTriangle, XCircle, Search } from "lucide-react";
 import { useState } from "react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
@@ -29,10 +30,10 @@ export default function Audit() {
         auditor: user?.displayName || user?.email || "Admin",
       });
       // Don't close scanner immediately, allow continuous scanning
-      alert(`Audit logged successfully: ${data.status}`);
+      toast(`Audit logged successfully: ${data.status}`);
     } catch (err) {
       console.error(err);
-      alert("Failed to log audit.");
+      toast("Failed to log audit.");
     }
   };
 
@@ -66,7 +67,7 @@ export default function Audit() {
       setSelectedLog(null);
     } catch (err) {
       console.error(err);
-      alert("Failed to resolve discrepancy.");
+      toast("Failed to resolve discrepancy.");
     }
   };
 

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { Search, Plus, Edit, Trash2, ChevronLeft, ChevronRight, ArrowUpDown } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
@@ -86,7 +87,7 @@ export default function Assets() {
       setIsDialogOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to save asset.");
+      toast("Failed to save asset.");
     }
   };
 
