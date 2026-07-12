@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { Wrench, Plus, MessageSquare, Clock, AlertCircle } from "lucide-react";
+import { Wrench, Plus, Clock, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
 import { useFirestoreMutation } from "../../hooks/useFirestoreMutation";
