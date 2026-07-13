@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/256px-React-icon.svg.png" alt="React Logo" width="80" height="80" style="margin-bottom: 20px;" />
 
   # AssetFlow ERP
   **Next-Generation Enterprise Asset & Resource Management**
