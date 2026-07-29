@@ -19,12 +19,16 @@ interface DepartmentFormProps {
 }
 
 export function DepartmentForm({ employees, onSubmit, isSubmitting }: DepartmentFormProps) {
-  const { register, handleSubmit, formState: { errors } } = useForm<DepartmentFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<DepartmentFormValues>({
     resolver: zodResolver(departmentSchema),
     defaultValues: {
       name: "",
       headId: "",
-    }
+    },
   });
 
   return (
@@ -37,13 +41,15 @@ export function DepartmentForm({ employees, onSubmit, isSubmitting }: Department
 
       <div className="space-y-2">
         <Label>Department Head (Optional)</Label>
-        <select 
+        <select
           {...register("headId")}
           className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           <option value="">Select an employee...</option>
-          {employees.map(emp => (
-            <option key={emp.id} value={emp.empId}>{emp.name} ({emp.title})</option>
+          {employees.map((emp) => (
+            <option key={emp.id} value={emp.empId}>
+              {emp.name} ({emp.title})
+            </option>
           ))}
         </select>
         {errors.headId && <p className="text-xs text-destructive">{errors.headId.message}</p>}

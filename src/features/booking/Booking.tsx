@@ -12,7 +12,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function Booking() {
   const { user } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
 
   // Data
   const { data: resources, loading: resLoading } = useFirestoreQuery<any>("resources");
@@ -24,10 +24,13 @@ export default function Booking() {
   const START_HOUR = 9;
   const END_HOUR = 18;
   const TOTAL_HOURS = END_HOUR - START_HOUR;
-  const timeSlots = Array.from({ length: TOTAL_HOURS }, (_, i) => `${String(START_HOUR + i).padStart(2, '0')}:00`);
+  const timeSlots = Array.from(
+    { length: TOTAL_HOURS },
+    (_, i) => `${String(START_HOUR + i).padStart(2, "0")}:00`
+  );
 
   // Filter bookings for the selected date
-  const todaysBookings = allBookings.filter(b => b.date === selectedDate);
+  const todaysBookings = allBookings.filter((b) => b.date === selectedDate);
 
   // Handlers
   const handleBookingSubmit = async (formData: any) => {
@@ -36,17 +39,17 @@ export default function Booking() {
       await createBooking({
         ...formData,
         bookedBy: user?.displayName || user?.email || "Admin",
-        status: "Upcoming"
+        status: "Upcoming",
       });
 
       // 2. Create Reminder Notification
-      const resource = resources.find(r => r.id === formData.resourceId);
+      const resource = resources.find((r) => r.id === formData.resourceId);
       await createNotification({
         userId: user?.uid || "admin",
         text: `Reminder: Booking for ${resource?.name} starts at ${formData.startTime} on ${formData.date}.`,
         type: "system",
         timestamp: new Date().toISOString(),
-        read: false
+        read: false,
       });
 
       setIsDialogOpen(false);
@@ -58,18 +61,18 @@ export default function Booking() {
 
   // Timeline Math Helpers
   const parseHour = (timeStr: string) => {
-    const [h, m] = timeStr.split(':').map(Number);
-    return h + (m / 60);
+    const [h, m] = timeStr.split(":").map(Number);
+    return h + m / 60;
   };
 
   const getStyleForBooking = (startTime: string, endTime: string) => {
     const start = parseHour(startTime);
     const end = parseHour(endTime);
-    
+
     // Clamp to timeline bounds
     const clampedStart = Math.max(START_HOUR, Math.min(END_HOUR, start));
     const clampedEnd = Math.max(START_HOUR, Math.min(END_HOUR, end));
-    
+
     const leftPercent = ((clampedStart - START_HOUR) / TOTAL_HOURS) * 100;
     const widthPercent = ((clampedEnd - clampedStart) / TOTAL_HOURS) * 100;
 
@@ -80,12 +83,17 @@ export default function Booking() {
   };
 
   const getStatusColor = (status: string) => {
-    switch(status) {
-      case "Ongoing": return "bg-emerald-500/20 border-emerald-500/50 text-emerald-500";
-      case "Upcoming": return "bg-primary/20 border-primary/50 text-primary";
-      case "Completed": return "bg-secondary border-border text-muted-foreground";
-      case "Cancelled": return "bg-destructive/20 border-destructive/50 text-destructive line-through";
-      default: return "bg-primary/20 border-primary/50 text-primary";
+    switch (status) {
+      case "Ongoing":
+        return "bg-emerald-500/20 border-emerald-500/50 text-emerald-500";
+      case "Upcoming":
+        return "bg-primary/20 border-primary/50 text-primary";
+      case "Completed":
+        return "bg-secondary border-border text-muted-foreground";
+      case "Cancelled":
+        return "bg-destructive/20 border-destructive/50 text-destructive line-through";
+      default:
+        return "bg-primary/20 border-primary/50 text-primary";
     }
   };
 
@@ -94,13 +102,15 @@ export default function Booking() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className="text-2xl font-semibold">Resource Booking</h2>
-          <p className="text-sm text-muted-foreground mt-1">Timeline view for shared spaces and equipment.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Timeline view for shared spaces and equipment.
+          </p>
         </div>
-        
+
         <div className="flex items-center gap-4">
-          <input 
-            type="date" 
-            value={selectedDate} 
+          <input
+            type="date"
+            value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
             className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           />
@@ -121,7 +131,10 @@ export default function Booking() {
               </div>
               <div className="relative flex">
                 {timeSlots.map((time) => (
-                  <div key={time} className="flex-1 border-r border-border/50 p-2 text-center text-xs font-medium text-muted-foreground">
+                  <div
+                    key={time}
+                    className="flex-1 border-r border-border/50 p-2 text-center text-xs font-medium text-muted-foreground"
+                  >
                     {time}
                   </div>
                 ))}
@@ -131,12 +144,18 @@ export default function Booking() {
             {/* Resources & Bookings */}
             <div className="divide-y divide-border">
               {resLoading || bookLoading ? (
-                <div className="p-10 text-center text-muted-foreground animate-pulse">Loading timeline...</div>
+                <div className="p-10 text-center text-muted-foreground animate-pulse">
+                  Loading timeline...
+                </div>
               ) : resources.length === 0 ? (
-                <div className="p-10 text-center text-muted-foreground">No resources available.</div>
+                <div className="p-10 text-center text-muted-foreground">
+                  No resources available.
+                </div>
               ) : (
                 resources.map((resource: any) => {
-                  const resourceBookings = todaysBookings.filter(b => b.resourceId === resource.id);
+                  const resourceBookings = todaysBookings.filter(
+                    (b) => b.resourceId === resource.id
+                  );
 
                   return (
                     <div key={resource.id} className="grid grid-cols-[250px_1fr] group">
@@ -145,24 +164,32 @@ export default function Booking() {
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xs text-muted-foreground">{resource.type}</span>
                           {resource.status === "Maintenance" && (
-                            <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded-sm">Maintenance</span>
+                            <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded-sm">
+                              Maintenance
+                            </span>
                           )}
                         </div>
                       </div>
-                      
+
                       {/* Timeline Grid for Resource */}
-                      <div className="relative flex group-hover:bg-secondary/10 transition-colors cursor-pointer" onClick={() => setIsDialogOpen(true)}>
+                      <div
+                        className="relative flex group-hover:bg-secondary/10 transition-colors cursor-pointer"
+                        onClick={() => setIsDialogOpen(true)}
+                      >
                         {/* Background Grid Lines */}
                         {timeSlots.map((time) => (
-                          <div key={`${resource.id}-${time}`} className="flex-1 border-r border-border/20 h-16" />
+                          <div
+                            key={`${resource.id}-${time}`}
+                            className="flex-1 border-r border-border/20 h-16"
+                          />
                         ))}
 
                         {/* Render Bookings Overlays */}
                         {resourceBookings.map((booking: any) => {
                           const style = getStyleForBooking(booking.startTime, booking.endTime);
-                          
+
                           return (
-                            <div 
+                            <div
                               key={booking.id}
                               style={style}
                               className={`absolute top-2 bottom-2 border rounded-md p-1.5 px-2 overflow-hidden text-xs z-10 shadow-sm transition-transform hover:scale-[1.02] hover:z-20 cursor-default ${getStatusColor(booking.status)}`}
@@ -172,7 +199,9 @@ export default function Booking() {
                               <div className="font-semibold truncate">{booking.title}</div>
                               <div className="truncate opacity-80 mt-0.5 flex justify-between">
                                 <span>{booking.bookedBy}</span>
-                                <span className="font-mono">{booking.startTime}-{booking.endTime}</span>
+                                <span className="font-mono">
+                                  {booking.startTime}-{booking.endTime}
+                                </span>
                               </div>
                             </div>
                           );
@@ -187,12 +216,12 @@ export default function Booking() {
         </CardContent>
       </Card>
 
-      <Dialog 
-        isOpen={isDialogOpen} 
-        onClose={() => setIsDialogOpen(false)} 
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
         title="Schedule Resource"
       >
-        <BookingForm 
+        <BookingForm
           resources={resources}
           existingBookings={allBookings}
           onSubmit={handleBookingSubmit}

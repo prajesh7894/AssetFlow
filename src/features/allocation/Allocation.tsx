@@ -5,7 +5,14 @@ import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
 import { useFirestoreMutation } from "../../hooks/useFirestoreMutation";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/ui/table";
 import { Dialog } from "../../components/ui/dialog";
 import { AllocationForm } from "./AllocationForm";
 
@@ -20,8 +27,8 @@ export default function Allocation() {
   const [activeTab, setActiveTab] = useState<"Active" | "Transit">("Active");
 
   // Filters
-  const activeAllocations = assets.filter(a => a.status === "Allocated");
-  const transitAllocations = assets.filter(a => a.status === "In Transit");
+  const activeAllocations = assets.filter((a) => a.status === "Allocated");
+  const transitAllocations = assets.filter((a) => a.status === "In Transit");
 
   // Handlers
   const handleOpenAssign = (assetId?: string) => {
@@ -31,18 +38,19 @@ export default function Allocation() {
 
   const handleProcessAllocation = async (formData: any) => {
     try {
-      const asset = assets.find(a => a.id === formData.assetId);
+      const asset = assets.find((a) => a.id === formData.assetId);
       if (!asset) return;
 
-      const actionText = formData.status === "In Transit" 
-        ? `Shipped to ${formData.location} for ${formData.assignedTo}` 
-        : `Assigned to ${formData.assignedTo} at ${formData.location}`;
+      const actionText =
+        formData.status === "In Transit"
+          ? `Shipped to ${formData.location} for ${formData.assignedTo}`
+          : `Assigned to ${formData.assignedTo} at ${formData.location}`;
 
       await updateRecord(asset.id, {
         assignedTo: formData.assignedTo,
         location: formData.location,
         status: formData.status,
-        history: [...(asset.history || []), { date: new Date().toISOString(), action: actionText }]
+        history: [...(asset.history || []), { date: new Date().toISOString(), action: actionText }],
       });
       setIsAssignModalOpen(false);
     } catch (err) {
@@ -57,7 +65,10 @@ export default function Allocation() {
         await updateRecord(asset.id, {
           assignedTo: null,
           status: "Available",
-          history: [...(asset.history || []), { date: new Date().toISOString(), action: `Revoked from ${asset.assignedTo}` }]
+          history: [
+            ...(asset.history || []),
+            { date: new Date().toISOString(), action: `Revoked from ${asset.assignedTo}` },
+          ],
         });
       } catch (err) {
         console.error(err);
@@ -70,7 +81,10 @@ export default function Allocation() {
     try {
       await updateRecord(asset.id, {
         status: "Allocated",
-        history: [...(asset.history || []), { date: new Date().toISOString(), action: `Transfer accepted by ${asset.assignedTo}` }]
+        history: [
+          ...(asset.history || []),
+          { date: new Date().toISOString(), action: `Transfer accepted by ${asset.assignedTo}` },
+        ],
       });
     } catch (err) {
       console.error(err);
@@ -80,12 +94,13 @@ export default function Allocation() {
 
   return (
     <div className="max-w-6xl flex flex-col h-full animate-in fade-in duration-500">
-      
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
         <div>
           <h2 className="text-2xl font-semibold">Asset Allocation & Transfers</h2>
-          <p className="text-sm text-muted-foreground mt-1">Manage chain of custody and transfer workflows.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Manage chain of custody and transfer workflows.
+          </p>
         </div>
         <Button onClick={() => handleOpenAssign()}>
           <ArrowRightLeft className="mr-2 h-4 w-4" />
@@ -102,12 +117,16 @@ export default function Allocation() {
           }`}
         >
           Active Allocations ({activeAllocations.length})
-          {activeTab === "Active" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full" />}
+          {activeTab === "Active" && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full" />
+          )}
         </button>
         <button
           onClick={() => setActiveTab("Transit")}
           className={`pb-3 text-sm font-medium transition-colors relative flex items-center gap-2 ${
-            activeTab === "Transit" ? "text-amber-500" : "text-muted-foreground hover:text-foreground"
+            activeTab === "Transit"
+              ? "text-amber-500"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           In Transit
@@ -116,13 +135,14 @@ export default function Allocation() {
               {transitAllocations.length} Pending
             </span>
           )}
-          {activeTab === "Transit" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-t-full" />}
+          {activeTab === "Transit" && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-t-full" />
+          )}
         </button>
       </div>
 
       {/* Tables */}
       <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex-1">
-        
         {/* ACTIVE ALLOCATIONS VIEW */}
         {activeTab === "Active" && (
           <Table>
@@ -137,7 +157,12 @@ export default function Allocation() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-10 text-muted-foreground animate-pulse">Loading allocations...</TableCell>
+                  <TableCell
+                    colSpan={4}
+                    className="text-center py-10 text-muted-foreground animate-pulse"
+                  >
+                    Loading allocations...
+                  </TableCell>
                 </TableRow>
               ) : activeAllocations.length === 0 ? (
                 <TableRow>
@@ -155,15 +180,22 @@ export default function Allocation() {
                         <span className="text-xs text-muted-foreground font-mono">{asset.tag}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium text-primary">
-                      {asset.assignedTo}
-                    </TableCell>
+                    <TableCell className="font-medium text-primary">{asset.assignedTo}</TableCell>
                     <TableCell>{asset.location}</TableCell>
                     <TableCell className="text-right space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handleOpenAssign(asset.id)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleOpenAssign(asset.id)}
+                      >
                         Transfer
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={() => handleRevoke(asset)} disabled={mutating}>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleRevoke(asset)}
+                        disabled={mutating}
+                      >
                         Revoke
                       </Button>
                     </TableCell>
@@ -189,7 +221,12 @@ export default function Allocation() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-10 text-muted-foreground animate-pulse">Loading transfers...</TableCell>
+                  <TableCell
+                    colSpan={5}
+                    className="text-center py-10 text-muted-foreground animate-pulse"
+                  >
+                    Loading transfers...
+                  </TableCell>
                 </TableRow>
               ) : transitAllocations.length === 0 ? (
                 <TableRow>
@@ -210,19 +247,27 @@ export default function Allocation() {
                     <TableCell className="font-medium">{asset.assignedTo}</TableCell>
                     <TableCell>{asset.location}</TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="text-amber-500 border-amber-500/50 bg-amber-500/10">
+                      <Badge
+                        variant="outline"
+                        className="text-amber-500 border-amber-500/50 bg-amber-500/10"
+                      >
                         In Transit
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handleRevoke(asset)} disabled={mutating}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleRevoke(asset)}
+                        disabled={mutating}
+                      >
                         Cancel Transfer
                       </Button>
-                      <Button 
-                        variant="default" 
-                        size="sm" 
+                      <Button
+                        variant="default"
+                        size="sm"
                         className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                        onClick={() => handleAcceptTransfer(asset)} 
+                        onClick={() => handleAcceptTransfer(asset)}
                         disabled={mutating}
                       >
                         <CheckCircle className="mr-1.5 h-3.5 w-3.5" /> Accept
@@ -234,22 +279,20 @@ export default function Allocation() {
             </TableBody>
           </Table>
         )}
-
       </div>
 
-      <Dialog 
-        isOpen={isAssignModalOpen} 
-        onClose={() => setIsAssignModalOpen(false)} 
+      <Dialog
+        isOpen={isAssignModalOpen}
+        onClose={() => setIsAssignModalOpen(false)}
         title="Asset Assignment & Transfer"
       >
-        <AllocationForm 
+        <AllocationForm
           assets={assets}
           preselectedAssetId={selectedAssetId}
           onSubmit={handleProcessAllocation}
           isSubmitting={mutating}
         />
       </Dialog>
-
     </div>
   );
 }

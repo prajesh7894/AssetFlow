@@ -32,7 +32,9 @@ export function useFirestoreMutation(collectionName: string) {
         list.push(payload);
         saveLocalData(list);
       } else {
-        const docRef = customId ? doc(db, collectionName, customId) : doc(collection(db, collectionName));
+        const docRef = customId
+          ? doc(db, collectionName, customId)
+          : doc(collection(db, collectionName));
         await setDoc(docRef, { id: docRef.id, ...data });
       }
       setLoading(false);
@@ -50,7 +52,7 @@ export function useFirestoreMutation(collectionName: string) {
     try {
       if (isDemoMode) {
         let list = getLocalData();
-        list = list.map((item: any) => item.id === id ? { ...item, ...data } : item);
+        list = list.map((item: any) => (item.id === id ? { ...item, ...data } : item));
         saveLocalData(list);
       } else {
         const docRef = doc(db, collectionName, id);

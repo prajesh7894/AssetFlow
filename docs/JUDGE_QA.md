@@ -1,6 +1,6 @@
 # 🧑‍⚖️ AssetFlow: Hackathon Judge Q&A Cheat Sheet
 
-*This document prepares you for the toughest technical and product questions judges might throw at you.*
+_This document prepares you for the toughest technical and product questions judges might throw at you._
 
 ### System Architecture & Tech Stack
 
@@ -49,7 +49,7 @@
 ### Advanced Technical Details
 
 **13. Q: How do you handle complex querying, like filtering assets by status and category simultaneously?**
-**A:** Our `useFirestoreQuery` hook supports dynamic filtering. We pass a configuration object containing `where` clauses, which are then translated into native Firestore composite queries. 
+**A:** Our `useFirestoreQuery` hook supports dynamic filtering. We pass a configuration object containing `where` clauses, which are then translated into native Firestore composite queries.
 
 **14. Q: How did you implement the skeleton loaders without flashing?**
 **A:** We use conditional rendering based on the `loading` state returned by our hooks. The `Skeleton` components exactly match the dimensions of the final data components, preventing Cumulative Layout Shift (CLS) when the data resolves.

@@ -26,14 +26,18 @@ export function AssetForm({ initialData, onSubmit, isSubmitting }: AssetFormProp
   const [imageBase64, setImageBase64] = useState<string | null>(initialData?.image || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<AssetFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AssetFormValues>({
     resolver: zodResolver(assetSchema),
     defaultValues: {
       name: initialData?.name || "",
       category: initialData?.category || "",
       location: initialData?.location || "",
       status: initialData?.status || "Available",
-    }
+    },
   });
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,16 +60,23 @@ export function AssetForm({ initialData, onSubmit, isSubmitting }: AssetFormProp
       {/* Image Upload Area */}
       <div className="space-y-2">
         <Label>Asset Image</Label>
-        <div 
+        <div
           className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center justify-center relative hover:bg-secondary/20 transition-colors cursor-pointer"
           onClick={() => !imageBase64 && fileInputRef.current?.click()}
         >
           {imageBase64 ? (
             <div className="relative w-full flex justify-center">
-              <img src={imageBase64} alt="Asset preview" className="max-h-40 rounded-md object-contain" />
-              <button 
-                type="button" 
-                onClick={(e) => { e.stopPropagation(); setImageBase64(null); }}
+              <img
+                src={imageBase64}
+                alt="Asset preview"
+                className="max-h-40 rounded-md object-contain"
+              />
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setImageBase64(null);
+                }}
                 className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1 shadow-md hover:bg-destructive/90"
               >
                 <X className="h-4 w-4" />
@@ -77,11 +88,11 @@ export function AssetForm({ initialData, onSubmit, isSubmitting }: AssetFormProp
               <p className="text-sm text-muted-foreground">Click to upload image</p>
             </>
           )}
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            className="hidden" 
-            accept="image/*" 
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*"
             onChange={handleImageUpload}
           />
         </div>
@@ -93,10 +104,10 @@ export function AssetForm({ initialData, onSubmit, isSubmitting }: AssetFormProp
           <Input {...register("name")} placeholder="e.g. MacBook Pro M3" />
           {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
         </div>
-        
+
         <div className="space-y-2">
           <Label>Category</Label>
-          <select 
+          <select
             {...register("category")}
             className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
@@ -116,10 +127,10 @@ export function AssetForm({ initialData, onSubmit, isSubmitting }: AssetFormProp
           <Input {...register("location")} placeholder="e.g. NY Floor 2" />
           {errors.location && <p className="text-xs text-destructive">{errors.location.message}</p>}
         </div>
-        
+
         <div className="space-y-2">
           <Label>Status</Label>
-          <select 
+          <select
             {...register("status")}
             className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >

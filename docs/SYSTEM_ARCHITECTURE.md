@@ -29,10 +29,12 @@ graph TD
 ```
 
 ### Frontend Architecture
+
 - **Presentation Layer**: Built with React functional components and TailwindCSS. The UI relies strictly on local state (`useState`) for transient interactions (like modals and dropdowns).
 - **Data Access Layer**: All database interactions are abstracted behind custom generic hooks (`useFirestoreQuery`, `useFirestoreMutation`). The UI never imports Firebase directly. This allows us to swap the backend out entirely without rewriting components.
 
 ### Backend Architecture
+
 - **Database**: Firebase Firestore (NoSQL document store). It provides optimistic concurrency and real-time delta updates to connected clients.
 - **Authentication**: Handled via Firebase Auth, creating a secure JWT token session.
 - **Hosting**: Served statically via Vercel's global CDN Edge Network.
@@ -81,7 +83,7 @@ erDiagram
         string status
         timestamp reportedAt
     }
-    
+
     DEPARTMENTS ||--o{ EMPLOYEES : "has"
     EMPLOYEES ||--o{ ASSETS : "assigned to"
     ASSETS ||--o{ AUDIT_LOGS : "generates"
@@ -100,11 +102,11 @@ sequenceDiagram
     participant Router
     participant AuthGuard
     participant Firebase
-    
+
     User->>Router: Visits /dashboard
     Router->>AuthGuard: Checks auth state
     AuthGuard->>Firebase: Valid Session?
-    
+
     alt is authenticated
         Firebase-->>AuthGuard: Returns User Object
         AuthGuard-->>Router: Allows Render
@@ -125,20 +127,20 @@ When a user allocates an asset to an employee, multiple distinct modules interac
 ```mermaid
 stateDiagram-v2
     [*] --> Available: Procurement
-    
+
     Available --> Allocated: Employee Assignment
     Allocated --> Available: Asset Returned
-    
+
     Allocated --> Maintenance: Hardware Failure
     Available --> Maintenance: Preventative Check
-    
+
     Maintenance --> Available: Repaired
     Maintenance --> Retired: Unrepairable / EOL
-    
+
     Retired --> [*]
-    
+
     note right of Available
-        Every state transition 
+        Every state transition
         generates an Audit Log.
     end note
 ```

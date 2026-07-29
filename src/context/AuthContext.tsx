@@ -9,7 +9,11 @@ type AuthContextType = {
   demoLogin: () => void;
 };
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true, demoLogin: () => {} });
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: true,
+  demoLogin: () => {},
+});
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
@@ -22,7 +26,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Check if demo user is stored in session
     const isDemo = sessionStorage.getItem("demo_user") === "true";
     if (isDemo) {
-      setUser({ uid: "demo-123", email: "demo@assetflow.local", displayName: "Demo Admin" } as User);
+      setUser({
+        uid: "demo-123",
+        email: "demo@assetflow.local",
+        displayName: "Demo Admin",
+      } as User);
       setLoading(false);
       return;
     }

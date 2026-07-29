@@ -55,7 +55,7 @@ export default function Login() {
               {error}
             </div>
           )}
-          
+
           <div className="space-y-2">
             <Label>Email</Label>
             <Input
@@ -77,7 +77,10 @@ export default function Login() {
               required
             />
             <div className="flex justify-end">
-              <button type="button" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+              <button
+                type="button"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
+              >
                 Forgot password
               </button>
             </div>
@@ -86,7 +89,9 @@ export default function Login() {
           <div className="pt-4 space-y-4">
             <div className="text-sm p-4 bg-secondary/50 rounded-lg border border-border">
               <p className="font-medium mb-1">New here?</p>
-              <p className="text-muted-foreground text-xs">Sign up creates an employee account. admin roles assigned later</p>
+              <p className="text-muted-foreground text-xs">
+                Sign up creates an employee account. admin roles assigned later
+              </p>
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>

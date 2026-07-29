@@ -26,13 +26,20 @@ export default function Notifications() {
         ) : (
           <div className="divide-y divide-border">
             {notifications.map((notification) => (
-              <div key={notification.id} className={`p-4 flex gap-4 ${!notification.read ? 'bg-secondary/20' : ''}`}>
+              <div
+                key={notification.id}
+                className={`p-4 flex gap-4 ${!notification.read ? "bg-secondary/20" : ""}`}
+              >
                 <div className="mt-1">
-                  <div className={`w-2.5 h-2.5 rounded-full ${notification.type === 'alert' ? 'bg-destructive' : notification.type === 'approval' ? 'bg-primary' : 'bg-muted-foreground'}`} />
+                  <div
+                    className={`w-2.5 h-2.5 rounded-full ${notification.type === "alert" ? "bg-destructive" : notification.type === "approval" ? "bg-primary" : "bg-muted-foreground"}`}
+                  />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-foreground">{notification.text}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{new Date(notification.timestamp).toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {new Date(notification.timestamp).toLocaleString()}
+                  </p>
                 </div>
               </div>
             ))}

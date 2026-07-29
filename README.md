@@ -1,8 +1,9 @@
 <div align="center">
 
-  # AssetFlow ERP
-  **Next-Generation Enterprise Asset & Resource Management**
-  
+# AssetFlow ERP
+
+**Next-Generation Enterprise Asset & Resource Management**
+
   <p align="center">
     <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-18.0-blue?style=for-the-badge&logo=react&logoColor=white" alt="React" /></a>
     <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
@@ -11,14 +12,14 @@
     <a href="https://firebase.google.com/"><img src="https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" /></a>
   </p>
 
-  *Built exclusively for the Odoo Hackathon*
+_Built exclusively for the Odoo Hackathon_
 </div>
 
 ---
 
 ## ⚡ Overview
 
-AssetFlow bridges the gap between physical hardware and digital workflows. Designed with a sleek, enterprise SaaS-inspired aesthetic, it brings real-time telemetry to asset management. 
+AssetFlow bridges the gap between physical hardware and digital workflows. Designed with a sleek, enterprise SaaS-inspired aesthetic, it brings real-time telemetry to asset management.
 
 From mathematical booking timelines to drag-and-drop maintenance Kanban boards, AssetFlow ensures 100% compliance and chain-of-custody tracking across your entire organization.
 
@@ -26,12 +27,12 @@ From mathematical booking timelines to drag-and-drop maintenance Kanban boards, 
 
 For judges and reviewers, please refer to the professional documentation located in our `docs/` folder:
 
-| Document | Description |
-|----------|-------------|
-| [🚀 Presentation Pitch](./docs/HACKATHON_PRESENTATION.md) | 3-minute demo script and future scope. |
-| [🧑‍⚖️ Judge Q&A](./docs/JUDGE_QA.md) | 30 predicted technical & product questions. |
-| [🌟 Project Summary](./docs/PROJECT_SUMMARY.md) | Executive summary and key innovations. |
-| [🏗️ System Architecture](./docs/SYSTEM_ARCHITECTURE.md) | High-level topology and 5 Mermaid diagrams. |
+| Document                                                  | Description                                 |
+| --------------------------------------------------------- | ------------------------------------------- |
+| [🚀 Presentation Pitch](./docs/HACKATHON_PRESENTATION.md) | 3-minute demo script and future scope.      |
+| [🧑‍⚖️ Judge Q&A](./docs/JUDGE_QA.md)                        | 30 predicted technical & product questions. |
+| [🌟 Project Summary](./docs/PROJECT_SUMMARY.md)           | Executive summary and key innovations.      |
+| [🏗️ System Architecture](./docs/SYSTEM_ARCHITECTURE.md)   | High-level topology and 5 Mermaid diagrams. |
 
 ---
 
@@ -51,7 +52,9 @@ For judges and reviewers, please refer to the professional documentation located
 ## 🚀 Getting Started
 
 ### 1. Installation
+
 Clone the repository and install dependencies:
+
 ```bash
 git clone https://github.com/prajesh7894/AssetFlow.git
 cd AssetFlow
@@ -59,18 +62,22 @@ npm install
 ```
 
 ### 2. Environment Setup
+
 Rename `.env.example` to `.env` and fill in your Firebase configuration keys for production sync.
+
 ```bash
 cp .env.example .env
 ```
 
 ### 3. Start Development Server
+
 ```bash
 npm run dev
 ```
 
 ### 🎮 Demo Sandbox Mode
-If you do not provide Firebase keys, the application will automatically enter **Demo Mode** (using LocalStorage). 
+
+If you do not provide Firebase keys, the application will automatically enter **Demo Mode** (using LocalStorage).
 Simply log in with `admin@assetflow.com` (password: `admin123`) and click **Seed Sandbox Data** on the dashboard to populate the local database instantly!
 
 ---
@@ -78,6 +85,7 @@ Simply log in with `admin@assetflow.com` (password: `admin123`) and click **Seed
 ## 🌍 Deployment
 
 This app is optimized for Vercel's Edge Network.
+
 ```bash
 npm i -g vercel
 vercel --prod

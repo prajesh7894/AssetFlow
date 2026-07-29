@@ -22,7 +22,11 @@ interface EmployeeFormProps {
 }
 
 export function EmployeeForm({ departments, onSubmit, isSubmitting }: EmployeeFormProps) {
-  const { register, handleSubmit, formState: { errors } } = useForm<EmployeeFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EmployeeFormValues>({
     resolver: zodResolver(employeeSchema),
     defaultValues: {
       empId: "",
@@ -30,7 +34,7 @@ export function EmployeeForm({ departments, onSubmit, isSubmitting }: EmployeeFo
       title: "",
       email: "",
       departmentId: "",
-    }
+    },
   });
 
   return (
@@ -41,7 +45,7 @@ export function EmployeeForm({ departments, onSubmit, isSubmitting }: EmployeeFo
           <Input {...register("empId")} placeholder="e.g. EMP-042" />
           {errors.empId && <p className="text-xs text-destructive">{errors.empId.message}</p>}
         </div>
-        
+
         <div className="space-y-2">
           <Label>Full Name</Label>
           <Input {...register("name")} placeholder="e.g. Sarah Connor" />
@@ -65,16 +69,20 @@ export function EmployeeForm({ departments, onSubmit, isSubmitting }: EmployeeFo
 
       <div className="space-y-2">
         <Label>Department Assignment</Label>
-        <select 
+        <select
           {...register("departmentId")}
           className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           <option value="">Select a department...</option>
-          {departments.map(dept => (
-            <option key={dept.id} value={dept.id}>{dept.name}</option>
+          {departments.map((dept) => (
+            <option key={dept.id} value={dept.id}>
+              {dept.name}
+            </option>
           ))}
         </select>
-        {errors.departmentId && <p className="text-xs text-destructive">{errors.departmentId.message}</p>}
+        {errors.departmentId && (
+          <p className="text-xs text-destructive">{errors.departmentId.message}</p>
+        )}
       </div>
 
       <div className="pt-2 flex justify-end gap-2">
