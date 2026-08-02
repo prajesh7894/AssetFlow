@@ -32,3 +32,6 @@ jobs:
 
       - name: Verify Build
         run: npm run build
+
+      - name: Run Tests with Coverage
+        run: npm run coverage
