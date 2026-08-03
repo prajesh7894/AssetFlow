@@ -11,10 +11,25 @@ import {
   Bell,
   LogOut,
   Search,
+  User,
+  Moon,
+  Sun,
+  Laptop,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useState, useEffect } from "react";
 import { GlobalSearch } from "./GlobalSearch";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "../ui/dropdown-menu";
+import { useTheme } from "../../context/ThemeProvider";
+import { useAuth } from "../../context/AuthContext";
+import { auth } from "../../lib/firebase";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -31,6 +46,8 @@ const navigation = [
 export default function MainLayout() {
   const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -82,13 +99,6 @@ export default function MainLayout() {
             })}
           </nav>
         </div>
-
-        <div className="p-4 border-t border-border/50">
-          <button className="flex items-center w-full px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-md transition-colors">
-            <LogOut className="mr-3 h-5 w-5" />
-            Sign Out
-          </button>
-        </div>
       </div>
 
       {/* Main content */}
@@ -100,7 +110,7 @@ export default function MainLayout() {
           {/* Global Search Trigger */}
           <button
             onClick={() => setIsSearchOpen(true)}
-            className="flex items-center justify-between w-64 px-3 py-2 text-sm text-muted-foreground bg-secondary/30 hover:bg-secondary/50 border border-border/50 rounded-lg transition-colors group"
+            className="flex items-center justify-between w-64 px-3 py-2 text-sm text-muted-foreground bg-secondary/30 hover:bg-secondary/50 border border-border/50 rounded-lg transition-colors group mr-4"
           >
             <span className="flex items-center gap-2">
               <Search className="h-4 w-4" />
@@ -110,6 +120,78 @@ export default function MainLayout() {
               <span className="text-xs">⌘</span>K
             </kbd>
           </button>
+
+          {/* User Profile Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div className="h-9 w-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center hover:ring-2 ring-primary/50 transition-all">
+                <User className="h-5 w-5 text-primary" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 p-2">
+              <DropdownMenuLabel>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    {user?.displayName || "Admin User"}
+                  </p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {user?.email || "admin@assetflow.local"}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <div className="p-2">
+                <p className="text-xs font-semibold text-muted-foreground mb-2">Theme</p>
+                <div className="flex items-center gap-1 bg-secondary/50 p-1 rounded-md">
+                  <button
+                    onClick={() => setTheme("light")}
+                    className={cn(
+                      "flex-1 flex justify-center py-1.5 rounded-sm transition-colors",
+                      theme === "light"
+                        ? "bg-background shadow-sm text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    <Sun className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setTheme("dark")}
+                    className={cn(
+                      "flex-1 flex justify-center py-1.5 rounded-sm transition-colors",
+                      theme === "dark"
+                        ? "bg-background shadow-sm text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    <Moon className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setTheme("system")}
+                    className={cn(
+                      "flex-1 flex justify-center py-1.5 rounded-sm transition-colors",
+                      theme === "system"
+                        ? "bg-background shadow-sm text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    <Laptop className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  sessionStorage.clear();
+                  auth.signOut();
+                  window.location.href = "/login";
+                }}
+                className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </header>
 
         <main className="flex-1 overflow-y-auto p-6 relative">
