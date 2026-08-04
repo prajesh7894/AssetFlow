@@ -15,6 +15,8 @@ import {
   Moon,
   Sun,
   Laptop,
+  Menu,
+  X,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useState, useEffect } from "react";
@@ -46,6 +48,7 @@ const navigation = [
 export default function MainLayout() {
   const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const { user } = useAuth();
 
@@ -60,15 +63,39 @@ export default function MainLayout() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background overflow-hidden">
+      {/* Mobile overlay backdrop */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div className="w-64 flex-shrink-0 border-r border-border bg-card flex flex-col z-20">
-        <div className="h-16 flex items-center px-6 border-b border-border/50">
+      <div
+        className={cn(
+          "w-64 flex-shrink-0 border-r border-border bg-card flex flex-col z-50 transition-transform duration-300 ease-in-out fixed inset-y-0 left-0 md:relative md:translate-x-0",
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="h-16 flex items-center justify-between px-6 border-b border-border/50">
           <div className="flex items-center gap-2">
             <Box className="h-6 w-6 text-primary" />
             <h1 className="text-xl font-bold text-foreground tracking-tight">AssetFlow</h1>
           </div>
+          <button
+            className="md:hidden text-muted-foreground hover:text-foreground"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto py-4">
@@ -102,15 +129,23 @@ export default function MainLayout() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
+      <div className="flex-1 flex flex-col overflow-hidden relative min-w-0">
         {/* Top Header */}
-        <header className="h-16 border-b border-border/50 bg-background/80 backdrop-blur-md flex items-center justify-between px-6 z-10">
+        <header className="h-16 border-b border-border/50 bg-background/80 backdrop-blur-md flex items-center justify-between px-4 md:px-6 z-10 shrink-0">
+          <div className="flex items-center">
+            <button
+              className="mr-4 md:hidden text-muted-foreground hover:text-foreground"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
           <div className="flex-1" />
 
           {/* Global Search Trigger */}
           <button
             onClick={() => setIsSearchOpen(true)}
-            className="flex items-center justify-between w-64 px-3 py-2 text-sm text-muted-foreground bg-secondary/30 hover:bg-secondary/50 border border-border/50 rounded-lg transition-colors group mr-4"
+            className="hidden md:flex items-center justify-between w-64 px-3 py-2 text-sm text-muted-foreground bg-secondary/30 hover:bg-secondary/50 border border-border/50 rounded-lg transition-colors group mr-4"
           >
             <span className="flex items-center gap-2">
               <Search className="h-4 w-4" />
@@ -119,6 +154,13 @@ export default function MainLayout() {
             <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border/50 bg-background px-1.5 font-mono text-[10px] font-medium text-muted-foreground group-hover:bg-muted opacity-70">
               <span className="text-xs">⌘</span>K
             </kbd>
+          </button>
+
+          <button
+            className="md:hidden mr-4 text-muted-foreground hover:text-foreground"
+            onClick={() => setIsSearchOpen(true)}
+          >
+            <Search className="h-5 w-5" />
           </button>
 
           {/* User Profile Dropdown */}
