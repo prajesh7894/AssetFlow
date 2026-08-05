@@ -87,16 +87,41 @@ export default function Login() {
           </div>
 
           <div className="pt-4 space-y-4">
-            <div className="text-sm p-4 bg-secondary/50 rounded-lg border border-border">
-              <p className="font-medium mb-1">New here?</p>
-              <p className="text-muted-foreground text-xs">
-                Sign up creates an employee account. admin roles assigned later
-              </p>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Signing in..." : "Login"}
+            </Button>
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border"></span>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">Or continue with Demo</span>
+              </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Create Account / Login"}
-            </Button>
+            <div className="grid grid-cols-2 gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  demoLogin("admin");
+                  navigate("/dashboard");
+                }}
+              >
+                Admin Role
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  demoLogin("employee");
+                  navigate("/dashboard");
+                }}
+              >
+                Employee Role
+              </Button>
+            </div>
           </div>
         </form>
       </div>

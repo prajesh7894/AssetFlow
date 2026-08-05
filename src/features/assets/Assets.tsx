@@ -3,6 +3,7 @@ import { Search, Plus, Edit, Trash2, ChevronLeft, ChevronRight, ArrowUpDown } fr
 import { useState, useMemo } from "react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
 import { useFirestoreMutation } from "../../hooks/useFirestoreMutation";
+import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Badge } from "../../components/ui/badge";
@@ -34,6 +35,8 @@ export default function Assets() {
   const [editingAsset, setEditingAsset] = useState<any>(null);
 
   // Queries & Mutations
+  const { user } = useAuth();
+  const isAdmin = user?.role !== "employee";
   const { data: assets, loading } = useFirestoreQuery<any>("assets");
   const {
     createRecord,
@@ -172,10 +175,12 @@ export default function Assets() {
           ))}
         </div>
 
-        <Button onClick={handleOpenCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          Register Asset
-        </Button>
+        {isAdmin && (
+          <Button onClick={handleOpenCreate}>
+            <Plus className="mr-2 h-4 w-4" />
+            Register Asset
+          </Button>
+        )}
       </div>
 
       {/* Search Bar */}
@@ -238,7 +243,7 @@ export default function Assets() {
                   Location <ArrowUpDown className="ml-2 h-3 w-3" />
                 </div>
               </TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              {isAdmin && <TableHead className="text-right">Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -294,14 +299,16 @@ export default function Assets() {
                     </Badge>
                   </TableCell>
                   <TableCell>{asset.location}</TableCell>
-                  <TableCell className="text-right space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(asset)}>
-                      <Edit className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(asset.id)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </TableCell>
+                  {isAdmin && (
+                    <TableCell className="text-right space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(asset)}>
+                        <Edit className="h-4 w-4 text-muted-foreground" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(asset.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))
             )}

@@ -100,30 +100,40 @@ export default function MainLayout() {
 
         <div className="flex-1 overflow-y-auto py-4">
           <nav className="space-y-1 px-3">
-            {navigation.map((item) => {
-              const isActive = location.pathname.startsWith(item.href);
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={cn(
-                    "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                    isActive
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-                  )}
-                >
-                  <item.icon
+            {navigation
+              .filter((item) => {
+                // If user is employee, hide Organization Setup, Maintenance, Audit, Reports
+                if (user?.role === "employee") {
+                  return !["Organization Setup", "Maintenance", "Audit", "Reports"].includes(
+                    item.name
+                  );
+                }
+                return true;
+              })
+              .map((item) => {
+                const isActive = location.pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
                     className={cn(
-                      "mr-3 flex-shrink-0 h-5 w-5 transition-colors",
-                      isActive ? "text-primary" : "text-muted-foreground"
+                      "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
                     )}
-                    aria-hidden="true"
-                  />
-                  {item.name}
-                </Link>
-              );
-            })}
+                  >
+                    <item.icon
+                      className={cn(
+                        "mr-3 flex-shrink-0 h-5 w-5 transition-colors",
+                        isActive ? "text-primary" : "text-muted-foreground"
+                      )}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </Link>
+                );
+              })}
           </nav>
         </div>
       </div>
@@ -245,7 +255,12 @@ export default function MainLayout() {
       <GlobalSearch
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        navigation={navigation}
+        navigation={navigation.filter((item) => {
+          if (user?.role === "employee") {
+            return !["Organization Setup", "Maintenance", "Audit", "Reports"].includes(item.name);
+          }
+          return true;
+        })}
       />
     </div>
   );
