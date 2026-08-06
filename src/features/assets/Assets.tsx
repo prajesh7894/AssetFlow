@@ -1,5 +1,14 @@
 import { toast } from "sonner";
-import { Search, Plus, Edit, Trash2, ChevronLeft, ChevronRight, ArrowUpDown } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  ArrowUpDown,
+  UploadCloud,
+} from "lucide-react";
 import { useState, useMemo } from "react";
 import { useFirestoreQuery } from "../../hooks/useFirestoreQuery";
 import { useFirestoreMutation } from "../../hooks/useFirestoreMutation";
@@ -18,6 +27,7 @@ import {
 import { Dialog } from "../../components/ui/dialog";
 import { AssetForm } from "./AssetForm";
 import { QRCodePlaceholder } from "../../components/ui/qrcode";
+import { CSVImport } from "../../components/ui/csv-import";
 
 const filterTabs = ["All", "Hardware", "Software", "Furniture", "Vehicles"];
 const ITEMS_PER_PAGE = 5;
@@ -32,6 +42,7 @@ export default function Assets() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCSVDialogOpen, setIsCSVDialogOpen] = useState(false);
   const [editingAsset, setEditingAsset] = useState<any>(null);
 
   // Queries & Mutations
@@ -107,7 +118,40 @@ export default function Assets() {
       setIsDialogOpen(false);
     } catch (err) {
       console.error(err);
-      toast("Failed to save asset.");
+      toast.error("Failed to save asset.");
+    }
+  };
+
+  const handleBulkImport = async (data: any[]) => {
+    try {
+      // Get the next starting tag number
+      let nextNum = 1;
+      if (assets && assets.length > 0) {
+        let max = 0;
+        assets.forEach((a) => {
+          const match = a.tag.match(/AF-(\d+)/);
+          if (match) {
+            const num = parseInt(match[1], 10);
+            if (num > max) max = num;
+          }
+        });
+        nextNum = max + 1;
+      }
+
+      // We should ideally run this in a transaction or batch if there are many,
+      // but for demo purposes sequential creates work.
+      for (const item of data) {
+        const tag = `AF-${String(nextNum).padStart(4, "0")}`;
+        await createRecord({
+          ...item,
+          tag,
+          history: [{ date: new Date().toISOString(), action: "Asset imported via CSV" }],
+        });
+        nextNum++;
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
   };
 
@@ -176,10 +220,16 @@ export default function Assets() {
         </div>
 
         {isAdmin && (
-          <Button onClick={handleOpenCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            Register Asset
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setIsCSVDialogOpen(true)}>
+              <UploadCloud className="mr-2 h-4 w-4" />
+              Bulk Import
+            </Button>
+            <Button onClick={handleOpenCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              Register Asset
+            </Button>
+          </div>
         )}
       </div>
 
@@ -386,6 +436,12 @@ export default function Assets() {
           </div>
         </div>
       </Dialog>
+
+      <CSVImport
+        isOpen={isCSVDialogOpen}
+        onClose={() => setIsCSVDialogOpen(false)}
+        onImport={handleBulkImport}
+      />
     </div>
   );
 }
