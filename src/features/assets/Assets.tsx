@@ -28,6 +28,7 @@ import { Dialog } from "../../components/ui/dialog";
 import { AssetForm } from "./AssetForm";
 import { QRCodePlaceholder } from "../../components/ui/qrcode";
 import { CSVImport } from "../../components/ui/csv-import";
+import { Timeline } from "../../components/ui/timeline";
 
 const filterTabs = ["All", "Hardware", "Software", "Furniture", "Vehicles"];
 const ITEMS_PER_PAGE = 5;
@@ -406,7 +407,7 @@ export default function Assets() {
             <AssetForm initialData={editingAsset} onSubmit={handleSubmit} isSubmitting={mutating} />
           </div>
           {/* Sidebar for Dialog: QR Code & History */}
-          <div className="w-full md:w-48 flex flex-col gap-4 border-t md:border-t-0 md:border-l border-border pt-4 md:pt-0 md:pl-6">
+          <div className="w-full md:w-72 flex flex-col gap-4 border-t md:border-t-0 md:border-l border-border pt-4 md:pt-0 md:pl-6">
             <div className="space-y-2">
               <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 Asset Tag
@@ -415,21 +416,12 @@ export default function Assets() {
             </div>
 
             {editingAsset && editingAsset.history && (
-              <div className="space-y-2 flex-1 overflow-hidden flex flex-col">
+              <div className="space-y-2 flex-1 overflow-hidden flex flex-col mt-4">
                 <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                  History
+                  Lifecycle History
                 </h4>
-                <div className="flex-1 overflow-y-auto space-y-3 pr-2 text-sm">
-                  {editingAsset.history
-                    .map((h: any, i: number) => (
-                      <div key={i} className="border-l-2 border-primary/50 pl-2">
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(h.date).toLocaleDateString()}
-                        </p>
-                        <p className="font-medium text-foreground">{h.action}</p>
-                      </div>
-                    ))
-                    .reverse()}
+                <div className="flex-1 overflow-y-auto pr-2 -ml-2">
+                  <Timeline events={editingAsset.history} />
                 </div>
               </div>
             )}
